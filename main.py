@@ -1,10 +1,12 @@
 from random import choice
 from string import punctuation, ascii_letters, digits
+import re
 
 
 dictOfInfo = {}
 listOfEveryCharacter = list(digits + ascii_letters + punctuation)
 flag = True
+regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 
 
 def generate_password(list_of_characters):
@@ -42,34 +44,41 @@ while flag:
     selection = choose_abort_generate_or_use(password)
 
     if selection == 'u':
+        while True:
+            email = input('Pass your e-mail address: ')
+            if not re.fullmatch(regex, email):
+                print('Wrong email!')
+                continue
 
-        mail = input('Pass your e-mail address: ')
-        site = input("Enter the site url for which this password is gonna be: ")
+            site = input("Enter the site url for which this password is gonna be: ")
 
-        if site.startswith('https://'):
-            pass
-        else:
-            site = 'https://' + site
+            if site.startswith('https://'):
+                pass
+            else:
+                site = 'https://' + site
 
-        dictOfInfo[site] = [mail, password]
+            dictOfInfo[site] = [email, password]
 
-        try:
-            with open('password.txt', 'a+')as f:
-                for site, mailAndPasswordList in dictOfInfo.items():
-                    stringToWrite = f'site: {site}\nmail: {mailAndPasswordList[0]}\npassword: {mailAndPasswordList[1]}\n'
-                    f.write(stringToWrite)
-                del dictOfInfo[site]
+            try:
+                with open('password.txt', 'a+')as f:
+                    for site, mailAndPasswordList in dictOfInfo.items():
+                        stringToWrite = f'site: {site}\nemail: {mailAndPasswordList[0]}\npassword: {mailAndPasswordList[1]}\n'
+                        f.write(stringToWrite)
+                    del dictOfInfo[site]
 
-        except FileNotFoundError:
-            with open('password.txt', 'w')as f:
-                for key, value in dictOfInfo.items():
-                    stringToWrite = f'site: {key}\nmail: {value[0]}\npassword: {value[1]}\n'
-                    f.write(stringToWrite)
+            except FileNotFoundError:
+                with open('password.txt', 'w')as f:
+                    for key, value in dictOfInfo.items():
+                        stringToWrite = f'site: {key}\nemail: {value[0]}\npassword: {value[1]}\n'
+                        f.write(stringToWrite)
+            break
 
     elif selection == 'g':
         continue
+
     elif selection == 'y':
         break
+
     else:
         print('You typed wrong letter!')
         continue
