@@ -47,11 +47,11 @@ def options_statement():
         email_address = input('Pass the email address connected to this account: ')
         key_read = new_output_list[0][1]
         key_read.encode()
-        newFernet = Fernet(key_read)
-        emailPosition = new_output_list[site_number * 4 - 2][1]
-        passwPosition = new_output_list[site_number * 4 - 1][1]
-        decrypted_email = newFernet.decrypt(emailPosition).decode()
-        decrypted_password = newFernet.decrypt(passwPosition).decode()
+        new_fernet = Fernet(key_read)
+        email_position = new_output_list[site_number * 4 - 2][1]
+        passw_position = new_output_list[site_number * 4 - 1][1]
+        decrypted_email = new_fernet.decrypt(email_position).decode()
+        decrypted_password = new_fernet.decrypt(passw_position).decode()
 
         if email_address == decrypted_email:
             print(f'Correct email.\nThe password: {decrypted_password}')
