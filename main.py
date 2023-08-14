@@ -4,6 +4,7 @@ from string import punctuation, ascii_letters, digits
 
 dictOfInfo = {}
 listOfEveryCharacter = list(digits + ascii_letters + punctuation)
+flag = True
 
 
 def generate_password(list_of_characters):
@@ -13,13 +14,24 @@ def generate_password(list_of_characters):
 
 def choose_abort_generate_or_use(passw):
     select = input(f'{passw}\nDo you want to use this password or generate a new one?(u - use and save, '
-                      f'g - generate, y - abort)').lower()
+                   f'g - generate, y - abort)').lower()
     return select
 
 
-while True:
+def checking_escape_button():
+    input_letter = input("Press 'q' button if you want to exit: ")
+    if input_letter == 'q':
+        return False
+    else:
+        return True
+
+
+while flag:
+
+    flag = checking_escape_button()
+
     try:
-        length = int(input("What's the length you want your password to be?(Y to abort)"))
+        length = int(input("What's the length you want your password to be?: "))
     except ValueError:
         print('You have typed wrong data type! Length has to be integer')
         continue
@@ -31,6 +43,7 @@ while True:
 
         mail = input('Pass your e-mail address: ')
         site = input("Enter the site url for which this password is gonna be: ")
+
         if site.startswith('https://'):
             pass
         else:
