@@ -3,7 +3,19 @@ from string import punctuation, ascii_letters, digits
 
 
 dictOfInfo = {}
-listThatContainsEverything = list(digits + ascii_letters + punctuation)
+listOfEveryCharacter = list(digits + ascii_letters + punctuation)
+
+
+def generate_password(list_of_characters):
+    passw = ''.join([choice(list_of_characters) for _ in range(length)])
+    return passw
+
+
+def choose_abort_generate_or_use(passw):
+    select = input(f'{passw}\nDo you want to use this password or generate a new one?(u - use and save, '
+                      f'g - generate, y - abort)').lower()
+    return select
+
 
 while True:
     try:
@@ -12,10 +24,10 @@ while True:
         print('You have typed wrong data type! Length has to be integer')
         continue
 
-    password = ''.join([choice(listThatContainsEverything) for _ in range(length)])
-    saveOrNot = input(f'{password}\nDo you want to use this password or generate a new one?(u - use and save, '
-                      f'g - generate)').lower()
-    if saveOrNot == 'u':
+    password = generate_password(listOfEveryCharacter)
+    selection = choose_abort_generate_or_use(password)
+
+    if selection == 'u':
 
         mail = input('Pass your e-mail address: ')
         site = input("Enter the site url for which this password is gonna be: ")
@@ -39,8 +51,10 @@ while True:
                     stringToWrite = f'site: {key}\nmail: {value[0]}\npassword: {value[1]}\n'
                     f.write(stringToWrite)
 
-    elif saveOrNot == 'g':
+    elif selection == 'g':
         continue
+    elif selection == 'y':
+        break
     else:
         print('You typed wrong letter!')
         continue
