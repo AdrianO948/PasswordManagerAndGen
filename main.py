@@ -1,12 +1,16 @@
 from random import choice
 from string import punctuation, ascii_letters, digits
 import re
+from cryptography.fernet import Fernet
 
 
 dictOfInfo = {}
 listOfEveryCharacter = list(digits + ascii_letters + punctuation)
 flag = True
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+key = Fernet.generate_key()
+fernet = Fernet(key)
+file = 'password.txt'
 
 
 def generate_password(list_of_characters):
@@ -20,17 +24,51 @@ def choose_abort_generate_or_use(passw):
     return select
 
 
-def checking_escape_button():
-    input_letter = input("Press any letter to start or 'q' button if you want to exit: ")
+def options_statement():
+    input_letter = input("Press any digit to start or 'q' button if you want to exit "
+                         "or 'r' if you want to check your passwords: ")
     if input_letter == 'q':
         return False
+
+    elif input_letter == 'r':
+        list_of_read_content = reading_out_of_file(file)
+        new_output_list = []
+
+        for item in list_of_read_content:
+            item = item.split(': ')
+            new_output_list.append(item)
+
+        for item in new_output_list:
+            if 'site' in item:
+                print(f"{item[1]}")
+
+        site_number = int(input('To which site do you want to check password? Pass site number: '))
+        print(new_output_list[site_number * 4 - 4][1])
+        email_address = input('Pass the email address connected to this account: ')
+        key_read = new_output_list[0][1]
+        key_read.encode()
+        newFernet = Fernet(key_read)
+        emailPosition = new_output_list[site_number * 4 - 2][1]
+        passwPosition = new_output_list[site_number * 4 - 1][1]
+        decrypted_email = newFernet.decrypt(emailPosition).decode()
+        decrypted_password = newFernet.decrypt(passwPosition).decode()
+
+        if email_address == decrypted_email:
+            print(f'Correct email.\nThe password: {decrypted_password}')
+
     else:
         return True
 
 
+def reading_out_of_file(file_name):
+    with open(file_name, 'r')as file_read:
+        list_of_content = file_read.readlines()
+    return list_of_content
+
+
 while flag:
 
-    flag = checking_escape_button()
+    flag = options_statement()
     if not flag:
         break
 
@@ -55,20 +93,25 @@ while flag:
             if not site.startswith('https://') or site.startswith('http://'):
                 site = 'https://' + site
 
-            dictOfInfo[site] = [email, password]
+            encEmail = fernet.encrypt(email.encode())
+            encPassword = fernet.encrypt(password.encode())
+            dictOfInfo[site] = [encEmail, encPassword]
 
             try:
-                with open('password.txt', 'a+')as f:
+                with open(file, 'a+')as f:
                     for site, mailAndPasswordList in dictOfInfo.items():
-                        stringToWrite = f'site: {site}\nemail: {mailAndPasswordList[0]}\npassword: {mailAndPasswordList[1]}\n'
+                        stringToWrite = (f'key: {key.decode()}\nsite: {site}\nemail: {mailAndPasswordList[0].decode()}'
+                                         f'\npassword: {mailAndPasswordList[1].decode()}\n')
                         f.write(stringToWrite)
                     del dictOfInfo[site]
 
             except FileNotFoundError:
-                with open('password.txt', 'w')as f:
-                    for key, value in dictOfInfo.items():
-                        stringToWrite = f'site: {key}\nemail: {value[0]}\npassword: {value[1]}\n'
+                with open(file, 'w')as f:
+                    for site, mailAndPasswordList in dictOfInfo.items():
+                        stringToWrite = (f'key: {key.decode()}\nsite: {site}\nemail: {mailAndPasswordList[0].decode()}'
+                                         f'\npassword: {mailAndPasswordList[1].decode()}\n')
                         f.write(stringToWrite)
+                    del dictOfInfo[site]
             break
 
     elif selection == 'g':
