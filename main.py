@@ -24,7 +24,7 @@ def choose_abort_generate_or_use(passw):
     return select
 
 
-def options_statement():
+def selecting_options():
     input_letter = input("Press any digit to start or 'q' button if you want to exit "
                          "or 'r' if you want to check your passwords: ")
     if input_letter == 'q':
@@ -68,7 +68,7 @@ def reading_out_of_file(file_name):
 
 while flag:
 
-    flag = options_statement()
+    flag = selecting_options()
     if not flag:
         break
 
