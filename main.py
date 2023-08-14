@@ -19,7 +19,7 @@ def choose_abort_generate_or_use(passw):
 
 
 def checking_escape_button():
-    input_letter = input("Press 'q' button if you want to exit: ")
+    input_letter = input("Press any letter to start or 'q' button if you want to exit: ")
     if input_letter == 'q':
         return False
     else:
@@ -29,6 +29,8 @@ def checking_escape_button():
 while flag:
 
     flag = checking_escape_button()
+    if not flag:
+        break
 
     try:
         length = int(input("What's the length you want your password to be?: "))
