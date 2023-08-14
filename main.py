@@ -52,9 +52,7 @@ while flag:
 
             site = input("Enter the site url for which this password is gonna be: ")
 
-            if site.startswith('https://'):
-                pass
-            else:
+            if not site.startswith('https://') or site.startswith('http://'):
                 site = 'https://' + site
 
             dictOfInfo[site] = [email, password]
