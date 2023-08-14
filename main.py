@@ -7,7 +7,7 @@ listThatContainsEverything = list(digits + ascii_letters + punctuation)
 
 while True:
     try:
-        length = int(input("What's the length you want your password to be?"))
+        length = int(input("What's the length you want your password to be?(Y to abort)"))
     except ValueError:
         print('You have typed wrong data type! Length has to be integer')
         continue
@@ -31,7 +31,7 @@ while True:
                 for site, mailAndPasswordList in dictOfInfo.items():
                     stringToWrite = f'site: {site}\nmail: {mailAndPasswordList[0]}\npassword: {mailAndPasswordList[1]}\n'
                     f.write(stringToWrite)
-                    del dictOfInfo[site]
+                del dictOfInfo[site]
 
         except FileNotFoundError:
             with open('password.txt', 'w')as f:
